@@ -1,0 +1,8 @@
+[package]
+name = "matrslab"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+num-traits = "0.2"
+rustyline = "13"
