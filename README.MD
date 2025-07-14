@@ -1,5 +1,4 @@
-# MATRSLAB
-<img src="docs/logo.png"/>
+![MATRSLAB](docs/logo.png)
 
 **MATRSLAB** is a Rust-native, no_std-friendly linear algebra library and interactive “lab” for vectors and matrices.  
 It provides statically-typed, stack-allocated types, operator overloading, and an optional interactive REPL (Read-Eval-Print Loop) for hands-on computations and experimentation.
