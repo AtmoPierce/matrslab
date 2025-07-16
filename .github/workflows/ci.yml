@@ -58,7 +58,7 @@ jobs:
         run: cargo doc --no-deps --workspace
 
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./target/doc
 
