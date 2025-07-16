@@ -1,4 +1,6 @@
 #![doc = include_str!("../../docs/repl/repl.md")]
+// Some help text
+const REPL_HELP_TEXT: &str = include_str!("../../docs/repl/help.txt");
 
 use rustyline::DefaultEditor;
 use crate::parse_and_eval;
@@ -60,5 +62,3 @@ impl Repl{
     }
 }
 
-// Some help text
-const REPL_HELP_TEXT: &str = include_str!("../../docs/repl/help.txt");
