@@ -1,5 +1,6 @@
 use core::ops::{Add, Sub, Mul, Div, Neg};
 use num_traits::Float;
+use crate::utils::{ToRadians, ToDegrees};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vector<T, const N: usize> {
@@ -81,37 +82,33 @@ where
     }
 }
 
-// Dot product: a method, not an operator
 impl<T, const N: usize> Vector<T, N>
 where
-    T: Mul<Output = T> + core::iter::Sum + Copy,
+    T: Mul<Output = T> + Copy + Float,
 {
-    pub fn dot(self, rhs: Self) -> T {
-        (0..N).map(|i| self.data[i] * rhs.data[i]).sum()
+    pub fn dot(&self, rhs: &Self) -> T {
+        let mut acc = T::zero();
+        for i in 0..N {
+            acc = acc + self.data[i] * rhs.data[i];
+        }
+        acc
     }
-}
-
-// Magnitude (Euclidean norm)
-impl<T, const N: usize> Vector<T, N>
-where
-    T: Mul<Output = T> + Copy + core::iter::Sum + Float,
-{
-    pub fn norm(self) -> T {
-        let sum: T = (0..N)
-            .map(|i| (self.data[i] * self.data[i]).into())
-            .sum();
-        sum.sqrt()
+    pub fn norm(&self) -> T {
+        let mut acc = T::zero();
+        for &x in &self.data {
+            acc = acc + x * x;
+        }
+        acc.sqrt()
     }
-}
-
-// Magnitude (returns T, works for floats)
-impl<T, const N: usize> Vector<T, N>
-where
-    T: Float + core::iter::Sum,
-{
-    pub fn norm_t(self) -> T {
-        let sum: T = (0..N).map(|i| self.data[i] * self.data[i]).sum();
-        sum.sqrt()
+    pub fn angle(&self, rhs: &Self) -> T {
+        let dot = self.dot(rhs);
+        let denom = self.norm() * rhs.norm();
+        if denom == T::zero() {
+            T::zero()
+        } else {
+            let cos_theta = (dot / denom).max(T::from(-1.0).unwrap()).min(T::one());
+            cos_theta.acos()
+        }
     }
 }
 
@@ -130,5 +127,67 @@ where
                 a1 * b2 - a2 * b1,
             ],
         }
+    }
+}
+
+// units
+impl<T, const N: usize> ToRadians for Vector<T, N>
+where
+    T: ToRadians + Copy,
+{
+    type Output = Vector<T::Output, N>;
+    fn to_radians(self) -> Self::Output {
+        let data = self.data.map(|x| x.to_radians());
+        Vector { data }
+    }
+}
+
+impl<T, const N: usize> ToDegrees for Vector<T, N>
+where
+    T: ToDegrees + Copy,
+{
+    type Output = Vector<T::Output, N>;
+    fn to_degrees(self) -> Self::Output {
+        let data = self.data.map(|x| x.to_degrees());
+        Vector { data }
+    }
+}
+
+// Behavior
+impl<T: Copy, const N: usize> Vector<T, N> {
+    pub fn iter(&self) -> impl Iterator<Item = T> + '_ {
+        self.data.iter().copied()
+    }
+}
+use core::ops::{Index, IndexMut};
+impl<T, const N: usize> Index<usize> for Vector<T, N> {
+    type Output = T;
+
+    fn index(&self, idx: usize) -> &Self::Output {
+        &self.data[idx]
+    }
+}
+
+impl<T, const N: usize> IndexMut<usize> for Vector<T, N> {
+    fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
+        &mut self.data[idx]
+    }
+}
+
+// std 
+#[cfg(feature = "std")]
+use std::fmt;
+
+#[cfg(feature = "std")]
+impl<T: Float + fmt::Display, const N: usize> fmt::Display for Vector<T, N> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[")?;
+        for (i, val) in self.data.iter().enumerate() {
+            write!(f, "{}", val)?;
+            if i < N - 1 {
+                write!(f, " ")?; // space between elements
+            }
+        }
+        write!(f, "]")
     }
 }

@@ -1,12 +1,9 @@
-mod euler;
-mod dcm;
-mod quaternion;
-
-pub mod rotation{
-    use super::{euler::Euler, dcm::DirectionCosineMatrix, quaternion::Quaternion};
-    enum Rotation {
-        Euler(Euler),
-        DirectionCosineMatrix(DirectionCosineMatrix),
-        Quaternion(Quaternion),
-    }
-}
+pub mod euler;
+pub mod dcm;
+pub mod quaternion;
+pub use euler::Euler;
+pub use dcm::DirectionCosineMatrix;
+pub use quaternion::Quaternion;
+#[cfg(test)]
+#[path = "tests/mod.rs"]
+pub mod tests;
