@@ -9,7 +9,6 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,15 +32,19 @@ jobs:
       - name: Test
         run: cargo test --verbose
   build-docs:
+    runs-on: ubuntu-latest
     needs: build-test
-    -run: cargo doc
-    -name: Upload artifact
-    uses: actions/upload-pages-artifact@v3
-    with:
-      path: "target/docs"    
+    steps:
+      - name: Build Docs
+        run: cargo doc
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "target/docs"
   deploy-docs:
-    environment: github-pages
-    url: ${{ steps.deployment.outputs.page_url }}
+    environment: 
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build-docs
     steps:
