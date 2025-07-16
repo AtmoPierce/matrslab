@@ -130,7 +130,6 @@ where
     }
 }
 
-
 // units
 impl<T, const N: usize> ToRadians for Vector<T, N>
 where
@@ -151,6 +150,27 @@ where
     fn to_degrees(self) -> Self::Output {
         let data = self.data.map(|x| x.to_degrees());
         Vector { data }
+    }
+}
+
+// Behavior
+impl<T: Copy, const N: usize> Vector<T, N> {
+    pub fn iter(&self) -> impl Iterator<Item = T> + '_ {
+        self.data.iter().copied()
+    }
+}
+use core::ops::{Index, IndexMut};
+impl<T, const N: usize> Index<usize> for Vector<T, N> {
+    type Output = T;
+
+    fn index(&self, idx: usize) -> &Self::Output {
+        &self.data[idx]
+    }
+}
+
+impl<T, const N: usize> IndexMut<usize> for Vector<T, N> {
+    fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
+        &mut self.data[idx]
     }
 }
 

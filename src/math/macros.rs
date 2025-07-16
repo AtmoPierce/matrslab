@@ -1,22 +1,27 @@
 // Matrix
+/// Construct a statically typed matrix from literals
+/// Example: `matrix![1.0, 2.0; 3.0, 4.0]` produces a Matrix<_, 2, 2>
 #[macro_export]
 macro_rules! matrix {
-    // Semicolon-separated rows, space or comma between columns
-    ( $( $($x:expr),+ );+ $(;)? ) => {
-        Matrix::from_vecs(vec![
+    // Accept input like: matrix![1.0, 2.0; 3.0, 4.0]
+    ( $( [ $( $x:expr ),+ $(,)? ] ),+ $(,)? ) => {{
+        use $crate::Matrix;
+        Matrix {
+            data: [
+                $(
+                    [ $( $x ),+ ],
+                )+
+            ]
+        }
+    }};
+    // Alternative: Accept without inner brackets
+    ( $( $( $x:expr ),+ );+ $(;)? ) => {{
+        matrix![
             $(
-                vec![ $($x as f64),+ ]
+                [ $( $x ),+ ]
             ),+
-        ])
-    };
-    // Semicolon-separated rows, space between columns
-    ( $( $($x:expr)+ );+ $(;)? ) => {
-        Matrix::from_vecs(vec![
-            $(
-                vec![ $($x as f64),+ ]
-            ),+
-        ])
-    };
+        ]
+    }};
 }
 #[macro_export]
 macro_rules! eye {
@@ -40,6 +45,8 @@ macro_rules! ones {
 }
 
 // Vectors
+use num_traits::Float;
+use crate::Vector;
 impl<T, const N: usize> Vector<T, N>
 where
     T: Float + Default + Copy,

@@ -209,6 +209,24 @@ impl<T: Float + Copy> Matrix<T, 3, 3> {
 }
 // Larger size matrices to come through LU Decomp or Laplace expansion, need to research.
 
+// Behavior
+use core::ops::{Index, IndexMut};
+
+impl<T, const M: usize, const N: usize> Index<(usize, usize)> for Matrix<T, M, N> {
+    type Output = T;
+
+    fn index(&self, index: (usize, usize)) -> &Self::Output {
+        let (r, c) = index;
+        &self.data[r][c]
+    }
+}
+
+impl<T, const M: usize, const N: usize> IndexMut<(usize, usize)> for Matrix<T, M, N> {
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
+        let (r, c) = index;
+        &mut self.data[r][c]
+    }
+}
 
 // std
 #[cfg(feature = "std")]
@@ -234,3 +252,4 @@ where
         write!(f, "]")
     }
 }
+

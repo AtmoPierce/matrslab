@@ -104,31 +104,42 @@ where
 
 impl<T: Float> From<Quaternion<T>> for DirectionCosineMatrix<T> {
     fn from(q: Quaternion<T>) -> Self {
-        let w = q.data.data[0];
-        let x = q.data.data[1];
-        let y = q.data.data[2];
-        let z = q.data.data[3];
+        let s = q.data.data[0];
+        let i= q.data.data[1];
+        let j = q.data.data[2];
+        let k = q.data.data[3];
 
         let two = T::one() + T::one();
+        let sp2 = s.powf(two);
+        let ip2 = i.powf(two);
+        let jp2 = j.powf(two);
+        let kp2 = k.powf(two);
 
         let data = [
             [
-                T::one() - two * (y * y + z * z),
-                two * (x * y - z * w),
-                two * (x * z + y * w),
+                sp2 + ip2 - jp2 - kp2,
+                two * (i * j + s * k),
+                two * (i * k - s * j)
             ],
             [
-                two * (x * y + z * w),
-                T::one() - two * (x * x + z * z),
-                two * (y * z - x * w),
+                two * (i * j - s * k),
+                sp2 - ip2 + jp2 - kp2,
+                two * (j * k + s * i)
             ],
             [
-                two * (x * z - y * w),
-                two * (y * z + x * w),
-                T::one() - two * (x * x + y * y),
+                two * (i * k + s * j),
+                two * (j * k - s * i),
+                sp2 - ip2 - jp2 + kp2
             ],
         ];
         Self { data: Matrix { data } }
+    }
+}
+impl<T: Float> From<&Matrix<T, 3, 3>> for DirectionCosineMatrix<T> {
+    fn from(m: &Matrix<T, 3, 3>) -> Self {
+        Self {
+            data: *m
+        }
     }
 }
 

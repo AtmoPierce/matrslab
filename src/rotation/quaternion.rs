@@ -13,6 +13,16 @@ impl<T: Float> Quaternion<T> {
     pub fn new(w: T, x: T, y: T, z: T) -> Self {
         Self { data: Vector { data: [w, x, y, z] } }
     }
+    pub fn norm(&self) -> T {
+        self.data.dot(&self.data).sqrt()
+    }
+
+    pub fn normalized(self) -> Self {
+        let norm = self.norm();
+        Self {
+            data: self.data / norm,
+        }
+    }
 }
 
 // Hamilton product for quaternion * quaternion
@@ -33,13 +43,14 @@ impl<T: Float> Mul for Quaternion<T> {
 
 
 impl<T: Float> TryFrom<&DirectionCosineMatrix<T>> for Quaternion<T> {
+    type Error = ();
     fn try_from(dcm: &DirectionCosineMatrix<T>) -> Result<Self, Self::Error> {
         // Norm Constraint
+        // https://motoq.github.io/doc/tnotes/dcmq.pdf
         let m = &dcm.as_matrix().data;
         let one = T::one();
         let two = one + one;
         let four = two + two;
-        let trace = m[0][0] + m[1][1] + m[2][2];
         let k = one / four;
 
         let c1 = one + m[0][0] + m[1][1] + m[2][2];
@@ -48,35 +59,38 @@ impl<T: Float> TryFrom<&DirectionCosineMatrix<T>> for Quaternion<T> {
         let c4 = one + m[0][0] - m[1][1] + m[2][2];
         if c1 > k{
             let qs = (c1 / four).sqrt();
-            let qi = m[1][2] - m[2][1] / four * qs;
-            let qj = m[2][1] - m[0][2] / four * qs;
-            let qk = m[2][0] + m[0][2] / four * qs;
+            let qs4 =  qs * four;
+            let qi = (m[1][2] - m[2][1]) / qs4;
+            let qj = (m[2][0] - m[0][2]) / qs4;
+            let qk = (m[0][1] - m[1][0]) / qs4;
             return Ok(Quaternion::new(qs, qi, qj, qk));
         }
         else if c2 > k{
-            let qi =;
-            let qs = ;
-            let qj = ;
-            let qk = ;
+            let qi = (c2 / four).sqrt();
+            let qi4 = qi * four;
+            let qs = (m[1][2] - m[2][1]) / qi4;
+            let qj = (m[0][1] + m[1][0]) / qi4;
+            let qk = (m[2][0] + m[0][2]) / qi4;
             return Ok(Quaternion::new(qs, qi, qj, qk));
         }
         else if c3 > k{
-            let qi =;
-            let qs = ;
-            let qj = ;
-            let qk = ;
+            let qj = (c3 / four).sqrt();
+            let qj4 = qj * four;
+            let qs = (m[2][0] - m[0][2]) / qj4;
+            let qi = (m[0][1] + m[1][0]) / qj4;
+            let qk = (m[1][2] + m[2][1]) / qj4;
             return Ok(Quaternion::new(qs, qi, qj, qk));
         }
         else if c4 > k{
-            let qs = ;
-            let qs4 =;
-            let qi = ;
-            let qj = ;
-            let qk = ;
+            let qk = (c4 / four).sqrt();
+            let qk4 = qk * four;
+            let qs = (m[0][1] - m[1][0]) / qk4;
+            let qi = (m[2][0] + m[0][2]) / qk4;
+            let qj = (m[1][2] + m[2][1]) / qk4;
             return Ok(Quaternion::new(qs, qi, qj, qk));
         }
         else{
-            return Err(())
+            Err(())
         }
     }
 }
