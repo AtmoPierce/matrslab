@@ -1,4 +1,4 @@
-use matrslab::{Vector, Matrix};
+use matrslab::{Matrix, Vector};
 use regex::Regex;
 
 fn parse_vector_dynamic(s: &str) -> Option<Vec<f64>> {
@@ -295,7 +295,9 @@ pub fn parse_and_eval(expr: &str) -> Result<String, String> {
                     ];
                     Ok(format_matrix(3, 3, &flat))
                 }
-                _ => Err("Matrix size not supported".to_string()),
+                _ => {
+                    Err("Matrix size not supported".to_string())
+                },
             }
         },
         // Matrix * Matrix ([a] * [b])

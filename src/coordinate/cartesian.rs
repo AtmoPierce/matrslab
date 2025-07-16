@@ -1,5 +1,5 @@
-use super::polar::PolarPosition;
 use super::cylindrical::CylindricalPosition;
+use super::polar::PolarPosition;
 use crate::Vector;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
