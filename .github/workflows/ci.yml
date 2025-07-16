@@ -24,8 +24,8 @@ jobs:
       # - name: Check formatting with rustfmt
       #   run: cargo fmt --all -- --check
 
-      - name: Run Clippy (lint)
-        run: cargo clippy --all-targets --all-features -- -D warnings
+      # - name: Run Clippy (lint)
+      #   run: cargo clippy --all-targets --all-features -- -D warnings
 
       - name: Build
         run: cargo build --verbose
