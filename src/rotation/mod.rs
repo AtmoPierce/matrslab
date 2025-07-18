@@ -7,3 +7,17 @@ pub use quaternion::Quaternion;
 #[cfg(test)]
 #[path = "tests/mod.rs"]
 pub mod tests;
+
+pub mod rotation{
+    use num_traits::Float;
+    use super::dcm::DirectionCosineMatrix;
+    use super::euler::Euler;
+    use super::quaternion::Quaternion;
+    pub enum Rotation<T> 
+        where T: Float
+            {
+            DCMRotation(DirectionCosineMatrix<T>),
+            EulerRotation(Euler<T>),
+            QuaternionRotation(Quaternion<T>)
+    }
+}
