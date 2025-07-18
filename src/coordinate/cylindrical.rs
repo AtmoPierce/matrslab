@@ -1,22 +1,23 @@
 use super::spherical::SphericalPosition;
 use super::cartesian::CartesianPosition;
 use crate::Vector;
+use num_traits::Float;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct CylindricalPosition {
-    pub data: Vector<f64, 3>, // [r, theta, z]
+pub struct CylindricalPosition<T: Float> {
+    pub data: Vector<T, 3>, // [r, theta, z]
 }
-impl CylindricalPosition {
-    pub fn new(r: f64, theta: f64, z: f64) -> Self {
+impl<T: Float> CylindricalPosition<T> {
+    pub fn new(r: T, theta: T, z: T) -> Self {
         Self { data: Vector { data: [r, theta, z] } }
     }
-    pub fn r(&self) -> f64 { self.data.data[0] }
-    pub fn theta(&self) -> f64 { self.data.data[1] }
-    pub fn z(&self) -> f64 { self.data.data[2] }
+    pub fn r(&self) -> T { self.data.data[0] }
+    pub fn theta(&self) -> T { self.data.data[1] }
+    pub fn z(&self) -> T { self.data.data[2] }
 }
 
-impl From<&CartesianPosition> for CylindricalPosition {
-    fn from(cart: &CartesianPosition) -> Self {
+impl<T:Float> From<&CartesianPosition<T>> for CylindricalPosition<T> {
+    fn from(cart: &CartesianPosition<T>) -> Self {
         let x = cart.x();
         let y = cart.y();
         let z = cart.z();
@@ -26,11 +27,11 @@ impl From<&CartesianPosition> for CylindricalPosition {
     }
 }
 
-impl From<&SphericalPosition> for CylindricalPosition{
-    fn from(s: &SphericalPosition) -> Self{
-        let r = s.r() * s.phi().sin();
-        let z = s.r() * s.phi().cos();
-        let theta = s.theta();
+impl<T:Float> From<&SphericalPosition<T>> for CylindricalPosition<T>{
+    fn from(s: &SphericalPosition<T>) -> Self{
+        let r = s.r() * s.theta().sin();
+        let z = s.r() * s.theta().cos();
+        let theta = s.phi();
         return CylindricalPosition::new(r, theta, z)
     }
 }

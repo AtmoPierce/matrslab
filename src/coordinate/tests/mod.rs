@@ -21,8 +21,8 @@ mod tests {
             CartesianPosition::new(2.0, -2.0, 1.0),
         ];
         for cart in &originals {
-            let cyl: CylindricalPosition = cart.into();
-            let cart2: CartesianPosition = (&cyl).into();
+            let cyl: CylindricalPosition<f64> = cart.into();
+            let cart2: CartesianPosition<f64> = (&cyl).into();
             assert!(approx_eq(cart.x(), cart2.x()));
             assert!(approx_eq(cart.y(), cart2.y()));
             assert!(approx_eq(cart.z(), cart2.z()));
@@ -39,8 +39,8 @@ mod tests {
         ];
 
         for cart in &originals {
-            let sph: SphericalPosition = cart.into();
-            let cart2: CartesianPosition = (&sph).into();
+            let sph: SphericalPosition<f64> = cart.into();
+            let cart2: CartesianPosition<f64> = (&sph).into();
 
             assert!(approx_eq(cart.x(), cart2.x()), "x: {} vs {}", cart.x(), cart2.x());
             assert!(approx_eq(cart.y(), cart2.y()), "y: {} vs {}", cart.y(), cart2.y());
@@ -57,8 +57,8 @@ mod tests {
             CylindricalPosition::new(3.0, 2.0, 1.0)
         ];
         for cyl in &originals {
-            let cart: CartesianPosition = cyl.into();
-            let cyl2: CylindricalPosition = (&cart).into();
+            let cart: CartesianPosition<f64> = cyl.into();
+            let cyl2: CylindricalPosition<f64> = (&cart).into();
             assert!(approx_eq(cyl.r(), cyl2.r()));
             assert!(approx_eq(cyl.theta(), cyl2.theta()));
             assert!(approx_eq(cyl.z(), cyl2.z()));
@@ -74,8 +74,8 @@ mod tests {
             CylindricalPosition::new(4.0, -FRAC_PI_2, 2.0),
         ];
         for cyl in &originals {
-            let sph: SphericalPosition = cyl.into();
-            let cyl2: CylindricalPosition = (&sph).into();
+            let sph: SphericalPosition<f64> = cyl.into();
+            let cyl2: CylindricalPosition<f64> = (&sph).into();
             assert!(approx_eq(cyl.r(), cyl2.r()));
             assert!(approx_eq(cyl.theta(), cyl2.theta()));
             assert!(approx_eq(cyl.z(), cyl2.z()));
@@ -91,8 +91,8 @@ mod tests {
             SphericalPosition::new(5.0, -FRAC_PI_2, FRAC_PI_4),
         ];
         for sph in &originals {
-            let cyl: CylindricalPosition = sph.into();
-            let sph2: SphericalPosition = (&cyl).into();
+            let cyl: CylindricalPosition<f64> = sph.into();
+            let sph2: SphericalPosition<f64> = (&cyl).into();
             assert!(approx_eq(sph.r(), sph2.r()));
             assert!(approx_eq(sph.theta(), sph2.theta()));
             assert!(approx_eq(sph.phi(), sph2.phi()));
@@ -108,8 +108,8 @@ mod tests {
             SphericalPosition::new(1.0, 0.0, PI),            // -z pole
         ];
         for sph in &originals {
-            let cart: CartesianPosition = sph.into();
-            let sph2: SphericalPosition = (&cart).into();
+            let cart: CartesianPosition<f64> = sph.into();
+            let sph2: SphericalPosition<f64> = (&cart).into();
 
             assert!(approx_eq(sph.r(), sph2.r()));
             if sph.phi().abs() < 1e-6 || (sph.phi() - PI).abs() < 1e-6 {
