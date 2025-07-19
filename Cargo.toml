@@ -9,7 +9,28 @@ std = []
 no_std = []
 repl = ["rustyline", "regex"]
 
+[lib]
+crate-type=["rlib", "staticlib", "cdylib"]
 
+[profile.dev]
+opt-level = 1
+overflow-checks = true
+
+[profile.release]
+opt-level = "s"
+debug = false
+strip = "none"
+debug-assertions = false
+overflow-checks = false
+lto = false
+panic = 'unwind'
+incremental = false
+codegen-units = 16
+rpath = false
+
+[profile.release.build-override]
+opt-level = "s"
+codegen-units = 256
 
 [dependencies]
 num-traits = "0.2"
