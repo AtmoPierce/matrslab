@@ -7,6 +7,7 @@ pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }
 
+
 // Add: Vector + Vector
 impl<T, const N: usize> Add for Vector<T, N>
 where
@@ -19,6 +20,12 @@ where
             result.data[i] = self.data[i] + rhs.data[i];
         }
         result
+    }
+}
+
+impl<T: Copy, const N: usize> Vector<T, N> {
+    pub fn new(data: [T; N]) -> Self {
+        Self { data }
     }
 }
 

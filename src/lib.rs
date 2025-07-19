@@ -1,5 +1,5 @@
 pub mod coordinate;
-pub mod rotation;
+pub mod attitude;
 pub mod math;
 pub mod utils;
 pub use math::vector::Vector;

@@ -2,7 +2,7 @@ use super::*;
 use approx::assert_relative_eq;
 use crate::Matrix;
 use crate::matrix;
-use crate::rotation::{DirectionCosineMatrix, Euler, Quaternion};
+use crate::attitude::{DirectionCosineMatrix, Euler, Quaternion};
 use num_traits::Float;
 
 pub fn matrices_approx_eq<T: Float + std::fmt::Debug>(

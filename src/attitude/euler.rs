@@ -1,7 +1,7 @@
 use crate::Vector;
 use num_traits::Float;
 use crate::utils::angle_conversion::{ToDegrees, ToRadians};
-use crate::rotation::{Quaternion, DirectionCosineMatrix};
+use crate::attitude::{Quaternion, DirectionCosineMatrix};
 use core::ops::{Mul, Add, Sub, Neg, Div};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
