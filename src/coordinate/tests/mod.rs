@@ -101,11 +101,12 @@ mod tests {
     #[test]
     fn test_spherical_cartesian_roundtrip() {
         let originals = [
-            Spherical::new(1.0, 0.0, FRAC_PI_2),     // +x
-            Spherical::new(1.0, PI, FRAC_PI_2),      // -x
-            Spherical::new(1.0, FRAC_PI_2, FRAC_PI_2), // +y
-            Spherical::new(1.0, 0.0, 0.0),           // +z pole
-            Spherical::new(1.0, 0.0, PI),            // -z pole
+            Spherical::new(1.0, 0.0, FRAC_PI_2),        // +x
+            Spherical::new(1.0, PI, FRAC_PI_2),         // -x
+            Spherical::new(1.0, FRAC_PI_2, FRAC_PI_2),  // +y
+            Spherical::new(1.0, -FRAC_PI_2, FRAC_PI_2),  // -y
+            Spherical::new(1.0, 0.0, 0.0),              // +z pole
+            Spherical::new(1.0, 0.0, PI),               // -z pole
         ];
         for sph in &originals {
             let cart: Cartesian<f64> = sph.into();

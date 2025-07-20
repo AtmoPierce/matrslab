@@ -21,30 +21,17 @@ impl<T: Float> Rotation<T> {
         self.quat
     }
 
-    /// Converts to DCM representation.
-    pub fn as_dcm(&self) -> DirectionCosineMatrix<T> {
-        DirectionCosineMatrix::from(&self.quat)
-    }
-
-    /// Rotates a vector from **body to inertial frame**.
-    pub fn rotate_vector(&self, v: Vector<T, 3>) -> Vector<T, 3> {
-        self.quat.rotate_vector(v)
-    }
-
-    /// Inverse rotation (i.e. inertial to body).
-    pub fn inverse(&self) -> Self {
-        Self { quat: self.quat.conjugate() }
-    }
-
     /// Compose two rotations: self followed by rhs.
     pub fn compose(&self, rhs: &Self) -> Self {
         Self::from_quaternion(self.quat * rhs.quat)
     }
 }
 
-impl<T: Float> From<&DirectionCosineMatrix<T>> for Rotation<T> {
-    fn from(dcm: &DirectionCosineMatrix<T>) -> Self {
-        Self::from_quaternion(Quaternion::from(dcm))
+impl<T: Float> TryFrom<&DirectionCosineMatrix<T>> for Rotation<T> {
+    type Error = ();
+
+    fn try_from(dcm: &DirectionCosineMatrix<T>) -> Result<Self, Self::Error> {
+        Quaternion::try_from(dcm).map(Self::from_quaternion)
     }
 }
 
@@ -62,7 +49,7 @@ impl<T: Float> Mul for Rotation<T> {
 }
 
 impl<T: Float> Rotation<T> {
-    /// Integrate forward given angular velocity in body frame (rad/s)
+    // !TODO Need to validate this with tests and such
     pub fn integrate(&self, omega_b: Vector<T, 3>, dt: T) -> Self {
         let delta_q = Quaternion::from_angular_velocity(omega_b, dt);
         Self::from_quaternion(delta_q * self.quat)
@@ -71,8 +58,7 @@ impl<T: Float> Rotation<T> {
 
 impl<T: Float> Quaternion<T> {
     pub fn from_angular_velocity(omega: Vector<T, 3>, dt: T) -> Self {
-        // Convert axis-angle to quaternion (Rodrigues formula)
-        let half_dt = dt * T::from(0.5).unwrap();
+        // !TODO Need to validate this with tests and such
         let mag = omega.norm();
         if mag == T::zero() {
             return Self::identity();
