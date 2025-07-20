@@ -1,5 +1,5 @@
 use crate::{Vector, Matrix};
-use crate::rotation::{Euler, DirectionCosineMatrix};
+use crate::attitude::{Euler, DirectionCosineMatrix};
 use num_traits::Float;
 use core::ops::{Mul, Add, Sub, Neg, Div};
 
@@ -23,6 +23,14 @@ impl<T: Float> Quaternion<T> {
             data: self.data / norm,
         }
     }
+    pub fn identity() -> Self {
+        Self::new(
+            T::one(), // w = 1
+            T::zero(),
+            T::zero(),
+            T::zero(),
+        )
+    }
 }
 
 // Hamilton product for quaternion * quaternion
@@ -32,7 +40,7 @@ impl<T: Float> Mul for Quaternion<T> {
         let [w1, x1, y1, z1] = self.data.data;
         let [w2, x2, y2, z2] = rhs.data.data;
 
-        let w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
+        let w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2; 
         let x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
         let y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
         let z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;

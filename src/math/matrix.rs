@@ -7,6 +7,12 @@ pub struct Matrix<T, const M: usize, const N: usize> {
     pub data: [[T; N]; M],
 }
 
+impl<T: Copy, const M: usize, const N: usize> Matrix<T, M, N> {
+    pub fn new(data: [[T; N]; M]) -> Self {
+        Self { data }
+    }
+}
+
 // Matrix addition
 impl<T, const M: usize, const N: usize> Add for Matrix<T, M, N>
 where

@@ -3,8 +3,8 @@ mod tests {
     use super::*;
     use crate::Matrix;
     use crate::matrix;
-    use crate::rotation::{DirectionCosineMatrix, Euler, Quaternion};
-    use crate::rotation::tests::test_utils::*;
+    use crate::attitude::{DirectionCosineMatrix, Euler, Quaternion};
+    use crate::attitude::tests::test_utils::*;
     use approx::assert_relative_eq;
     use num_traits::Float;
 
