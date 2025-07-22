@@ -23,6 +23,14 @@ where
     }
 }
 
+impl<T: Default + Copy, const N: usize> Default for Vector<T, N> {
+    fn default() -> Self {
+        Self {
+            data: [T::default(); N],
+        }
+    }
+}
+
 impl<T: Copy, const N: usize> Vector<T, N> {
     pub fn new(data: [T; N]) -> Self {
         Self { data }

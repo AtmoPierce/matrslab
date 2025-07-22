@@ -1,5 +1,6 @@
 use super::spherical::Spherical;
 use super::cartesian::Cartesian;
+use crate::reference_frame::ReferenceFrame;
 use crate::Vector;
 use num_traits::Float;
 
