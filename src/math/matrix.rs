@@ -12,6 +12,13 @@ impl<T: Copy, const M: usize, const N: usize> Matrix<T, M, N> {
         Self { data }
     }
 }
+impl<T: Default + Copy, const M: usize, const N: usize> Default for Matrix<T, M, N> {
+    fn default() -> Self {
+        Self {
+            data: [[T::default(); N]; M],
+        }
+    }
+}
 
 // Matrix addition
 impl<T, const M: usize, const N: usize> Add for Matrix<T, M, N>
@@ -29,6 +36,8 @@ where
         result
     }
 }
+
+
 
 // Matrix subtraction
 impl<T, const M: usize, const N: usize> Sub for Matrix<T, M, N>

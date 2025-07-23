@@ -1,9 +1,10 @@
-mod cartesian;
-mod spherical;
-mod cylindrical;
+pub mod cartesian;
+pub mod spherical;
+pub mod cylindrical;
 pub use cartesian::Cartesian;
 pub use cylindrical::Cylindrical;
 pub use spherical::Spherical;
+
 pub mod coordinate{
     use num_traits::Float;
     use crate::{coordinate::{Cartesian, Cylindrical, Spherical}, reference_frame::ReferenceFrame};

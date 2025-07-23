@@ -1,10 +1,10 @@
-use crate::Vector;
+use crate::math::Vector;
 use num_traits::Float;
 use crate::utils::angle_conversion::{ToDegrees, ToRadians};
 use crate::attitude::{Quaternion, DirectionCosineMatrix};
 use core::ops::{Mul, Add, Sub, Neg, Div};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct Euler<T: Float> {
     pub data: Vector<T, 3>, // [roll, pitch, yaw]
 }

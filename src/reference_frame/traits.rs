@@ -1,6 +1,6 @@
 use num_traits::Float;
 use crate::attitude::Quaternion;
-use crate::Vector;
+use crate::math::Vector;
 
 /// Marker trait for any frame (inertial or rotating)
 pub trait ReferenceFrame {}

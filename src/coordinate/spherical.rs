@@ -2,7 +2,7 @@ use num_traits::{Float, Pow};
 
 use super::cartesian::Cartesian;
 use super::cylindrical::Cylindrical;
-use crate::{reference_frame::ReferenceFrame, Matrix, Vector};
+use crate::{reference_frame::ReferenceFrame, math::Vector};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Spherical<T: Float> {

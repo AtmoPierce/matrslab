@@ -1,8 +1,9 @@
+use num_traits::Float;
+
 use super::spherical::Spherical;
 use super::cartesian::Cartesian;
+use crate::math::Vector;
 use crate::reference_frame::ReferenceFrame;
-use crate::Vector;
-use num_traits::Float;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Cylindrical<T: Float> {
@@ -17,8 +18,8 @@ impl<T: Float> Cylindrical<T> {
     pub fn z(&self) -> T { self.data.data[2] }
 }
 
-impl<T:Float> From<&Cartesian<T>> for Cylindrical<T> {
-    fn from(cart: &Cartesian<T>) -> Self {
+impl<T:Float, RF: ReferenceFrame> From<&Cartesian<T, RF>> for Cylindrical<T> {
+    fn from(cart: &Cartesian<T, RF>) -> Self {
         let x = cart.x();
         let y = cart.y();
         let z = cart.z();

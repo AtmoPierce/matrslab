@@ -1,17 +1,17 @@
-use crate::{Vector, Matrix};
+use crate::math::{Vector, Matrix};
 use crate::attitude::{Euler, DirectionCosineMatrix};
 use num_traits::Float;
 use core::ops::{Mul, Add, Sub, Neg, Div};
 
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct Quaternion<T: Float> {
-    pub data: Vector<T, 4>, // [w, x, y, z]
+    pub data: Vector<T, 4>, // [w, i, j, k]
 }
 
 impl<T: Float> Quaternion<T> {
-    pub fn new(w: T, x: T, y: T, z: T) -> Self {
-        Self { data: Vector { data: [w, x, y, z] } }
+    pub fn new(w: T, i: T, j: T, k: T) -> Self {
+        Self { data: Vector { data: [w, i, j, k] } }
     }
     pub fn norm(&self) -> T {
         self.data.dot(&self.data).sqrt()
@@ -31,6 +31,19 @@ impl<T: Float> Quaternion<T> {
             T::zero(),
         )
     }
+    pub fn w(&self)->T{
+        return self.data[0];
+    }
+    pub fn i(&self)->T{
+        return self.data[1];
+    }
+    pub fn j(&self)->T{
+        return self.data[2];
+    }
+    pub fn k(&self)->T{
+        return self.data[3];
+    }
+    
 }
 
 // Hamilton product for quaternion * quaternion
@@ -41,11 +54,11 @@ impl<T: Float> Mul for Quaternion<T> {
         let [w2, x2, y2, z2] = rhs.data.data;
 
         let w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2; 
-        let x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
-        let y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
-        let z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;
+        let i = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
+        let j = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
+        let k = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;
 
-        Self::new(w, x, y, z)
+        Self::new(w, i, j, k)
     }
 }
 

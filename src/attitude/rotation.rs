@@ -1,11 +1,11 @@
-use crate::Vector;
+use crate::math::Vector;
 use num_traits::Float;
 use crate::attitude::{Quaternion, DirectionCosineMatrix};
 use core::ops::{Mul};
 use core::fmt;
 
 /// A body-fixed rotation, representing orientation of body w.r.t inertial frame.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct Rotation<T: Float> {
     quat: Quaternion<T>,
 }

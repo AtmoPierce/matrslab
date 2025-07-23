@@ -5,7 +5,7 @@
 macro_rules! matrix {
     // Accept input like: matrix![1.0, 2.0; 3.0, 4.0]
     ( $( [ $( $x:expr ),+ $(,)? ] ),+ $(,)? ) => {{
-        use $crate::Matrix;
+        use $crate::math::Matrix;
         Matrix {
             data: [
                 $(
@@ -46,7 +46,7 @@ macro_rules! ones {
 
 // Vectors
 use num_traits::Float;
-use crate::Vector;
+use crate::math::Vector;
 impl<T, const N: usize> Vector<T, N>
 where
     T: Float + Default + Copy,
