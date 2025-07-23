@@ -1,10 +1,10 @@
 use super::euler::Euler;
 use super::quaternion::Quaternion;
-use crate::Matrix;
+use crate::math::Matrix;
 use num_traits::Float;
 use core::ops::{Mul, Add, Sub, Neg, Div};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct DirectionCosineMatrix<T: Float> {
     data: Matrix<T, 3, 3>, // still private
 }
@@ -64,6 +64,7 @@ impl<T: Float> DirectionCosineMatrix<T> {
         ];
         Self { data: Matrix { data } }
     }
+
 }
 
 // Operators

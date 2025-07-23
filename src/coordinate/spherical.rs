@@ -2,7 +2,7 @@ use num_traits::{Float, Pow};
 
 use super::cartesian::Cartesian;
 use super::cylindrical::Cylindrical;
-use crate::{Vector, Matrix};
+use crate::{reference_frame::ReferenceFrame, math::Vector};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Spherical<T: Float> {
@@ -21,8 +21,8 @@ impl<T: Float> Spherical<T>{
     pub fn theta(&self) -> T { self.data.data[2] }
 }
 
-impl<T: Float> From<&Cartesian<T>> for Spherical<T> {
-    fn from(cart: &Cartesian<T>) -> Self {
+impl<T: Float, RF: ReferenceFrame> From<&Cartesian<T, RF>> for Spherical<T> {
+    fn from(cart: &Cartesian<T, RF>) -> Self {
         let x = cart.x();
         let y = cart.y();
         let z = cart.z();
@@ -33,9 +33,18 @@ impl<T: Float> From<&Cartesian<T>> for Spherical<T> {
     }
 }
 
-impl<T: Float> From<&Cylindrical<T>> for Spherical<T>{
-    fn from(c: &Cylindrical<T>) -> Self{
-        let rect: Cartesian<T> = Cartesian::from(c);
-        Spherical::from(&rect)
+impl<T: Float> From<&Cylindrical<T>> for Spherical<T> {
+    fn from(c: &Cylindrical<T>) -> Self {
+        let r_cyl = c.r();
+        let theta = c.theta(); // azimuthal angle in x-y plane
+        let z = c.z();
+
+        let rho = (r_cyl * r_cyl + z * z).sqrt(); // spherical radius
+        let phi = if rho != T::zero() {
+            (z / rho).acos() // inclination from z-axis
+        } else {
+            T::zero()
+        };
+        Spherical::new(rho, theta, phi)
     }
 }

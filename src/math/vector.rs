@@ -1,4 +1,4 @@
-use core::ops::{Add, Sub, Mul, Div, Neg};
+use core::ops::{Add, Sub, Mul, Div, Neg, AddAssign, SubAssign};
 use num_traits::Float;
 use crate::utils::{ToRadians, ToDegrees};
 
@@ -8,18 +8,11 @@ pub struct Vector<T, const N: usize> {
 }
 
 
-// Add: Vector + Vector
-impl<T, const N: usize> Add for Vector<T, N>
-where
-    T: Add<Output = T> + Copy,
-{
-    type Output = Self;
-    fn add(self, rhs: Self) -> Self {
-        let mut result = self;
-        for i in 0..N {
-            result.data[i] = self.data[i] + rhs.data[i];
+impl<T: Default + Copy, const N: usize> Default for Vector<T, N> {
+    fn default() -> Self {
+        Self {
+            data: [T::default(); N],
         }
-        result
     }
 }
 
@@ -29,13 +22,63 @@ impl<T: Copy, const N: usize> Vector<T, N> {
     }
 }
 
-// Sub: Vector - Vector
-impl<T, const N: usize> Sub for Vector<T, N>
-where
-    T: Sub<Output = T> + Copy,
-{
+// ===== Add =====
+
+// Vector + Vector
+impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
     type Output = Self;
-    fn sub(self, rhs: Self) -> Self {
+    fn add(self, rhs: Self) -> Self::Output {
+        let mut result = self;
+        for i in 0..N {
+            result.data[i] = self.data[i] + rhs.data[i];
+        }
+        result
+    }
+}
+
+// &Vector + &Vector
+impl<'a, T: Add<Output = T> + Copy, const N: usize> Add for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn add(self, rhs: Self) -> Self::Output {
+        let mut result = *self;
+        for i in 0..N {
+            result.data[i] = self.data[i] + rhs.data[i];
+        }
+        result
+    }
+}
+
+// Vector + &Vector
+impl<'a, T: Add<Output = T> + Copy, const N: usize> Add<&'a Vector<T, N>> for Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn add(self, rhs: &'a Vector<T, N>) -> Self::Output {
+        self + *rhs
+    }
+}
+
+// &Vector + Vector
+impl<'a, T: Add<Output = T> + Copy, const N: usize> Add<Vector<T, N>> for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn add(self, rhs: Vector<T, N>) -> Self::Output {
+        *self + rhs
+    }
+}
+
+// AddAssign: Vector += Vector
+impl<T: AddAssign + Copy, const N: usize> AddAssign for Vector<T, N> {
+    fn add_assign(&mut self, rhs: Self) {
+        for i in 0..N {
+            self.data[i] += rhs.data[i];
+        }
+    }
+}
+
+// ===== Sub =====
+
+// Vector - Vector
+impl<T: Sub<Output = T> + Copy, const N: usize> Sub for Vector<T, N> {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
         let mut result = self;
         for i in 0..N {
             result.data[i] = self.data[i] - rhs.data[i];
@@ -44,14 +87,62 @@ where
     }
 }
 
-// Neg: -Vector
-impl<T, const N: usize> Neg for Vector<T, N>
-where
-    T: Neg<Output = T> + Copy,
-{
+// &Vector - &Vector
+impl<'a, T: Sub<Output = T> + Copy, const N: usize> Sub for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn sub(self, rhs: Self) -> Self::Output {
+        let mut result = *self;
+        for i in 0..N {
+            result.data[i] = self.data[i] - rhs.data[i];
+        }
+        result
+    }
+}
+
+// Vector - &Vector
+impl<'a, T: Sub<Output = T> + Copy, const N: usize> Sub<&'a Vector<T, N>> for Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn sub(self, rhs: &'a Vector<T, N>) -> Self::Output {
+        self - *rhs
+    }
+}
+
+// &Vector - Vector
+impl<'a, T: Sub<Output = T> + Copy, const N: usize> Sub<Vector<T, N>> for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn sub(self, rhs: Vector<T, N>) -> Self::Output {
+        *self - rhs
+    }
+}
+
+// SubAssign: Vector -= Vector
+impl<T: SubAssign + Copy, const N: usize> SubAssign for Vector<T, N> {
+    fn sub_assign(&mut self, rhs: Self) {
+        for i in 0..N {
+            self.data[i] -= rhs.data[i];
+        }
+    }
+}
+
+// ===== Neg =====
+
+// -Vector
+impl<T: Neg<Output = T> + Copy, const N: usize> Neg for Vector<T, N> {
     type Output = Self;
-    fn neg(self) -> Self {
+    fn neg(self) -> Self::Output {
         let mut result = self;
+        for i in 0..N {
+            result.data[i] = -self.data[i];
+        }
+        result
+    }
+}
+
+// -&Vector
+impl<'a, T: Neg<Output = T> + Copy, const N: usize> Neg for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn neg(self) -> Self::Output {
+        let mut result = *self;
         for i in 0..N {
             result.data[i] = -self.data[i];
         }
@@ -86,6 +177,21 @@ where
             result.data[i] = self.data[i] / rhs;
         }
         result
+    }
+}
+
+// By reference:
+impl<'a, T: Float + Copy, const N: usize> Mul<T> for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn mul(self, rhs: T) -> Self::Output {
+        (*self).clone() * rhs
+    }
+}
+
+impl<'a, T: Float + Copy, const N: usize> Div<T> for &'a Vector<T, N> {
+    type Output = Vector<T, N>;
+    fn div(self, rhs: T) -> Self::Output {
+        (*self).clone() / rhs
     }
 }
 
