@@ -230,7 +230,7 @@ impl<T> Vector<T, 3>
 where
     T: Copy + Sub<Output = T> + Mul<Output = T>,
 {
-    pub fn cross(self, rhs: Self) -> Self {
+    pub fn cross(&self, rhs: &Self) -> Self {
         let [a1, a2, a3] = self.data;
         let [b1, b2, b3] = rhs.data;
         Self {
